@@ -50,7 +50,7 @@ function App() {
 
 	const toggleModal = () => setIsOpen(!isOpen)
 
-	const { loading, error, data } = useQuery(gql`
+	const { loading, error, data, refetch } = useQuery(gql`
 		query getOrders {
 			order(where: { delivered: { _eq: false } }) {
 				client_name
@@ -123,6 +123,13 @@ function App() {
   if (mutationData.error) {
     console.warn("error when adding order", mutationData.error)
   }
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      refetch()
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
 	return (
 		<Wrapper>
